@@ -15,6 +15,8 @@ token *token_init(token_type type) {
 }
 
 /**
+ * Figures out type of currently read token
+ *
  * @param token_type cur current type of token in buffer
  * @param char c new character from expression
  * @return token_type type of token depending on input char
