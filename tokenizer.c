@@ -15,10 +15,35 @@ token *token_init(token_type type) {
 }
 
 /**
+ * @param token_type cur current type of token in buffer
+ * @param char c new character from expression
  * @return token_type type of token depending on input char
  */
-token_type ttfromc(char c) {
+token_type ttfromc(token_type *cur, char c) {
+	if (isdigit(c)) {
+		if (*cur == TT_FLOAT) return TT_FLOAT;
+		else if(*cur == TT_LIT) return TT_LIT;
+		else return TT_INT;
+	} else if (c == '+' || c == '-' || c == '*' || c == '/') {
+		return TT_BOP;
+	} else if (c == '.') {
+		if (*cur == TT_INT) {
+			*cur = TT_FLOAT;
+			return TT_FLOAT;
+		} else if (*cur == TT_FLOAT) {
+			/* probably two dots in one number */
+			printf("Two '.' symbols in one float\n");
+			return TT_EMPTY;
+		}
+		return TT_FLOAT;
+	} else if (isspace(c)) {
+		return TT_EMPTY;
+	} else if (isalpha(c)) {
+		return TT_LIT;
+	}
 
+	printf("Unexpected token '%c'\n", c);
+	return TT_EMPTY;
 }
 
 token **parse_expr(char *expr) {
@@ -30,35 +55,9 @@ token **parse_expr(char *expr) {
 	int bufpos = 0;
 
 	while (*expr) {
-		printf("new char: %c\n", *expr);
-		token_type newtype = TT_EMPTY;
-		/* expected type of token */
-		if (isdigit(*expr)) {
-			if (curtype == TT_FLOAT) newtype = TT_FLOAT;
-			else newtype = TT_INT;
-		} else if (*expr == '+' || *expr == '-' || 
-				*expr == '*' || *expr == '/') {
-			newtype = TT_BOP;
-		} else if (*expr == '.') {
-			if (curtype == TT_INT) {
-				newtype = TT_FLOAT;
-				curtype = TT_FLOAT;
-			} else if (curtype == TT_FLOAT) {
-				/* probably two dots in one number */
-				printf("Two '.' symbols in one float\n");
-			}
-		} else if (isspace(*expr)) {
-			/* skip white spaces */
-			expr++;
-			continue;
-		} else {
-			printf("Unexpected token '%c'\n", *expr);
-			return NULL;
-		}
-
-
+		token_type newtype = ttfromc(&curtype, *expr);
+		
 		if (newtype != curtype) {
-			printf("different token type\n");
 			/* generate new token */	
 			buffer[bufpos] = '\0';
 			token *t = token_init(curtype);
@@ -100,8 +99,20 @@ token **parse_expr(char *expr) {
 }
 
 int main(int argc, char *argv[]) {
-	char *test = "42 + 3 * 11";
+	/* create expression from args */
+	char buffer[512];
+	int bufpos = 0;
 
-	parse_expr(test);
+	for (int i = 1; i<argc; i++) {
+		int len = strlen(argv[i]);
+		strncpy(&buffer[bufpos], argv[i], len);
+		bufpos += len + 1;
+		buffer[bufpos-1] = ' ';
+	}
+	buffer[bufpos] = '\0';
+	
+	printf("Expression: %s\n", buffer);
+
+	parse_expr(buffer);
 	return 0;
 }
