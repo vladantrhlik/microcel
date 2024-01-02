@@ -26,7 +26,7 @@ token_type ttfromc(token_type *cur, char c) {
 		if (*cur == TT_FLOAT) return TT_FLOAT;
 		else if(*cur == TT_LIT) return TT_LIT;
 		else return TT_INT;
-	} else if (c == '+' || c == '-' || c == '*' || c == '/') {
+	} else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') {
 		return TT_BOP;
 	} else if (c == '.') {
 		if (*cur == TT_INT) {
@@ -50,6 +50,10 @@ token_type ttfromc(token_type *cur, char c) {
 	return TT_EMPTY;
 }
 
+int issinglechar(token_type t) {
+	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
+}
+
 token **parse_expr(char *expr) {
 	if (!expr) return NULL;
 
@@ -60,8 +64,8 @@ token **parse_expr(char *expr) {
 
 	while (*expr) {
 		token_type newtype = ttfromc(&curtype, *expr);
-		
-		if (newtype != curtype) {
+
+		if (newtype != curtype || (newtype == curtype && issinglechar(newtype)) ) {
 			/* generate new token */	
 			buffer[bufpos] = '\0';
 			token *t = token_init(curtype);
