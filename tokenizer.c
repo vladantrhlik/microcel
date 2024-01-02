@@ -40,7 +40,9 @@ token_type ttfromc(token_type *cur, char c) {
 		return TT_EMPTY;
 	} else if (isalpha(c)) {
 		return TT_LIT;
-	}
+	} 
+	else if (c == '(') return TT_OPAR;
+	else if (c == ')') return TT_CPAR;
 
 	printf("Unexpected token '%c'\n", c);
 	return TT_EMPTY;
@@ -81,6 +83,14 @@ token **parse_expr(char *expr) {
 					strcpy(t->lit, buffer);
 					printf("+ literal token: %s\n", t->lit);
 					break;
+				case TT_OPAR:
+					printf("+ open parenthese\n");
+					break;
+				case TT_CPAR:
+					printf("+ close parenthese\n");
+					break;
+				default:
+					break;
 			}
 			/* reset buffer */
 			bufpos = 0;
@@ -96,6 +106,7 @@ token **parse_expr(char *expr) {
 
 		expr++;
 	}
+	return NULL;
 }
 
 int main(int argc, char *argv[]) {

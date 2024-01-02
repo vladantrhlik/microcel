@@ -7,6 +7,8 @@ typedef enum {
 	TT_FLOAT,	/* float value */
 	TT_LIT,		/* literal value */
 	TT_BOP, 	/* binary operation */
+	TT_OPAR,	/* ( */
+	TT_CPAR,	/* ) */
 } token_type; 
 
 typedef struct {
