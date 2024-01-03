@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tokenizer.h"
+#include "stack.h"
 
 token *token_init(token_type type) {
 	if (!type) return NULL;
@@ -15,7 +16,7 @@ token *token_init(token_type type) {
 }
 
 /**
- * Figures out type of currently read token
+ * token_type from char -- Figures out type of currently read token
  *
  * @param token_type cur current type of token in buffer
  * @param char c new character from expression
@@ -54,13 +55,15 @@ int issinglechar(token_type t) {
 	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
 }
 
-token **parse_expr(char *expr) {
+stack *parse_expr(char *expr) {
 	if (!expr) return NULL;
 
 	char buffer[32];
 	memset(buffer, '\0', 32); /* clear buffer */
 	token_type curtype = TT_EMPTY;
 	int bufpos = 0;
+
+	stack *s = stack_init();
 
 	while (*expr) {
 		token_type newtype = ttfromc(&curtype, *expr);
@@ -98,6 +101,8 @@ token **parse_expr(char *expr) {
 				default:
 					break;
 			}
+			/* add to stack */
+			stack_push(s, (void *) t);
 			/* reset buffer */
 			bufpos = 0;
 			memset(buffer, '\0', 32); /* clear buffer */
@@ -112,7 +117,7 @@ token **parse_expr(char *expr) {
 
 		expr++;
 	}
-	return NULL;
+	return s;
 }
 
 int main(int argc, char *argv[]) {

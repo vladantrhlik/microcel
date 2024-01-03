@@ -1,3 +1,5 @@
+#include "stack.h"
+
 #ifndef TOKENIZER
 #define TOKENIZER
 
@@ -28,9 +30,8 @@ typedef struct {
 token *token_init(token_type type);
 
 /**
-* Creates array of tokens from given expression
 * @param *char expr expression
+* @return stack* stack of all tokens (in reversed order :))
 */
-token **parse_expr(char *expr);
-
+stack *parse_expr(char *expr);
 #endif
