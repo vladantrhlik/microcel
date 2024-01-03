@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
 		} else if(!strcmp(buff, "exit")) {
 			stack_free(&s);
 			return 0;
+		} else if (!strcmp(buff, "revert")) {
+			stack_revert(s);	
 		} else {
 			char *new = malloc(sizeof(char) * (strlen(buff)+1));
 			if (!new) return 1;

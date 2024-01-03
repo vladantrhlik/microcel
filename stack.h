@@ -25,6 +25,11 @@ int stack_push(stack *s, void *data);
 void *stack_pop(stack *s);
 
 /**
+ * Reverse order of items in stack :D
+ */
+void stack_revert(stack *s);
+
+/**
 * Frees stack structure but not its content
 */
 void stack_free(stack **s);

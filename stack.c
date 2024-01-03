@@ -44,6 +44,18 @@ void *stack_pop(stack *s) {
 	return s->data[s->count];
 }
 
+void stack_revert(stack *s) {
+	if (!s) return;
+
+	for (int i = 0; i < s->count/2; i++) {
+		int j = s->count-1-i;
+
+		void *tmp = s->data[j];
+		s->data[j] = s->data[i];
+		s->data[i] = tmp;
+	}
+}
+
 void stack_free(stack **s) {
 	if (!s || !*s) return;
 	free(*s);
