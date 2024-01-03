@@ -1,4 +1,4 @@
-#include "adt/stack.h"
+#include "adt/list.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -33,5 +33,5 @@ token *token_init(token_type type);
 * @param *char expr expression
 * @return stack* stack of all tokens (in reversed order :))
 */
-stack *parse_expr(char *expr);
+list *parse_expr(char *expr);
 #endif

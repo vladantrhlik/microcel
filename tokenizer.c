@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tokenizer.h"
-#include "adt/stack.h"
+#include "adt/list.h"
 
 token *token_init(token_type type) {
 	if (!type) return NULL;
@@ -55,7 +55,7 @@ int issinglechar(token_type t) {
 	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
 }
 
-stack *parse_expr(char *expr) {
+list *parse_expr(char *expr) {
 	if (!expr) return NULL;
 
 	char buffer[32];
@@ -63,7 +63,7 @@ stack *parse_expr(char *expr) {
 	token_type curtype = TT_EMPTY;
 	int bufpos = 0;
 
-	stack *s = stack_init();
+	list *l = list_init();
 
 	while (*expr) {
 		token_type newtype = ttfromc(&curtype, *expr);
@@ -76,33 +76,27 @@ stack *parse_expr(char *expr) {
 			switch (curtype) {
 				case TT_INT:
 					t->inum = atoi(buffer);
-					printf("+ int token: %d\n", t->inum);
 					break;
 				case TT_FLOAT:
 					t->fnum = atof(buffer);
-					printf("+ float token: %f\n", t->fnum);
 					break;
 				case TT_BOP:
 					t->ch = *buffer;
-					printf("+ operation token: %c\n", t->ch);
 					break;
 				case TT_LIT:
 					t->lit = malloc(sizeof(char) * strlen(buffer));
 					if (!t->lit) return NULL;
 					strcpy(t->lit, buffer);
-					printf("+ literal token: %s\n", t->lit);
 					break;
 				case TT_OPAR:
-					printf("+ open parenthese\n");
 					break;
 				case TT_CPAR:
-					printf("+ close parenthese\n");
 					break;
 				default:
 					break;
 			}
 			/* add to stack */
-			stack_push(s, (void *) t);
+			list_add(l, t);
 			/* reset buffer */
 			bufpos = 0;
 			memset(buffer, '\0', 32); /* clear buffer */
@@ -117,24 +111,5 @@ stack *parse_expr(char *expr) {
 
 		expr++;
 	}
-	return s;
-}
-
-int main(int argc, char *argv[]) {
-	/* create expression from args */
-	char buffer[512];
-	int bufpos = 0;
-
-	for (int i = 1; i<argc; i++) {
-		int len = strlen(argv[i]);
-		strncpy(&buffer[bufpos], argv[i], len);
-		bufpos += len + 1;
-		buffer[bufpos-1] = ' ';
-	}
-	buffer[bufpos] = '\0';
-	
-	printf("Expression: %s\n", buffer);
-
-	parse_expr(buffer);
-	return 0;
+	return l;
 }
