@@ -1,6 +1,8 @@
 #ifndef STACK
 #define STACK
 
+#define STACK_SIZE_STEP 10
+
 typedef struct {
 	int count; /* number of entries */
 	int size; /* current size of buffer */

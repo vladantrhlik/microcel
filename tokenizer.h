@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "adt/stack.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER

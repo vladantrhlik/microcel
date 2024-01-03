@@ -2,15 +2,13 @@
 #include <stdlib.h>
 #include "stack.h"
 
-#define SIZE_STEP 10
-
 stack *stack_init() {
 	stack *s = malloc(sizeof(stack));
 	if (!s) return NULL;
 	
 	s->count = 0; 
-	s->size = SIZE_STEP;
-	s->data = malloc(SIZE_STEP * sizeof(void *));
+	s->size = STACK_SIZE_STEP;
+	s->data = malloc(STACK_SIZE_STEP * sizeof(void *));
 
 	if (!s->data) {
 		free(s);
@@ -25,8 +23,8 @@ int stack_push(stack *s, void *data) {
 
 	/* check if there's enough space for new entry */
 	if (s->count+1 > s->size) {
-		s->data = realloc(s->data, s->size + SIZE_STEP);
-		s->size += SIZE_STEP;
+		s->data = realloc(s->data, s->size + STACK_SIZE_STEP);
+		s->size += STACK_SIZE_STEP;
 	}
 
 	s->data[s->count] = data;
