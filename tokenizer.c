@@ -12,7 +12,7 @@ token *token_init(token_type type) {
 	if (!t) return NULL;
 
 	t->type = type;
-	return t;;
+	return t;
 }
 
 /**
