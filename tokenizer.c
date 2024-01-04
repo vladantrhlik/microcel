@@ -51,6 +51,10 @@ token_type ttfromc(token_type *cur, char c) {
 	return TT_EMPTY;
 }
 
+int isvalue(token_type type) {
+	return type == TT_LIT || type == TT_INT || type == TT_FLOAT;
+}
+
 int issinglechar(token_type t) {
 	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
 }

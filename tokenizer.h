@@ -30,6 +30,11 @@ typedef struct {
 token *token_init(token_type type);
 
 /**
+ * Checks if token type is literal, int or float
+ */
+int isvalue(token_type type);
+
+/**
 * @param *char expr expression
 * @return stack* stack of all tokens (in reversed order :))
 */

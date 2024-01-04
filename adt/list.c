@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "list.h"
 
 list *list_init() {
@@ -23,7 +24,9 @@ int list_add(list *l, void *data) {
 	/* check if there's space */
 	if (l->count+1 > l->size) {
 		l->size += LIST_SIZE_STEP;
-		l->data = realloc(l->data, l->size);
+		void **new = realloc(l->data, l->size * sizeof(void *));
+		if (new) l->data = new;
+		else printf("Failed to allocate memory\n");
 	}
 	
 	/* add data */

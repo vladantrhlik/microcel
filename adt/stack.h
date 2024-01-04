@@ -26,6 +26,8 @@ int stack_push(stack *s, void *data);
 */
 void *stack_pop(stack *s);
 
+void *stack_peak(stack *s);
+
 /**
  * Reverse order of items in stack :D
  */

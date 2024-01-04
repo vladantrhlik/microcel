@@ -1,23 +1,28 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "list.h"
 
 int main(int argc, char *argv[]) {
 	list *l = list_init();
 
-	list_add(l, "bob");
-	list_add(l, "dod");
-	list_add(l, "adam");
+	char buf[32];
 
-	for (int i = 0; i<l->count; i++) {
-		printf("%d: %s\n", i, list_get(l, i));
+	while (1) {
+		printf(": ");
+		scanf("%s", buf);
+
+		char *n = malloc(sizeof(char) * strlen(buf));
+		strcpy(n, buf);
+
+		list_add(l, n);
+
+		/* print list contents */
+		for (int i = 0; i<l->count; i++) {
+			printf("%s, ", (char*) l->data[i]);
+		}
+		printf("\n");
 	}
-
-	list_insert(l, "test", 1);
-
-	for (int i = 0; i<l->count; i++) {
-		printf("%d: %s\n", i, list_get(l, i));
-	}
-
 
 	return 0;
 }

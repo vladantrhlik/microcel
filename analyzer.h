@@ -5,7 +5,9 @@
 
 /**
 * Analyzes structure of tokens and checks for invalid syntax
+*
+* @return int 1 if error else 0 
 */
-void analyze(list *tokens);
+int analyze(list *tokens);
 
 #endif

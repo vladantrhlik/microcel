@@ -42,6 +42,17 @@ void *stack_pop(stack *s) {
 	return s->data[s->count];
 }
 
+
+void *stack_peak(stack *s) {
+	if (!s) return NULL;
+	
+	if (s->count <= 0) return NULL;
+	
+	return s->data[s->count];
+}
+
+
+
 void stack_revert(stack *s) {
 	if (!s) return;
 
