@@ -26,7 +26,6 @@ list *postfix(list *tokens) {
 	stack *opstack = stack_init();
 
 	for (int i = 0; i<tokens->count; i++) {
-		printf("token %d\n", i);
 		token *t = (token *) list_get(tokens, i);
 		token *o = NULL; /* used for top of op stack */
 

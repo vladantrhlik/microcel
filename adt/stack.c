@@ -23,8 +23,8 @@ int stack_push(stack *s, void *data) {
 
 	/* check if there's enough space for new entry */
 	if (s->count+1 > s->size) {
-		s->data = realloc(s->data, s->size + STACK_SIZE_STEP);
 		s->size += STACK_SIZE_STEP;
+		s->data = realloc(s->data, s->size * sizeof(void*));
 	}
 
 	s->data[s->count] = data;
@@ -48,7 +48,7 @@ void *stack_peak(stack *s) {
 	
 	if (s->count <= 0) return NULL;
 	
-	return s->data[s->count];
+	return s->data[s->count-1];
 }
 
 
