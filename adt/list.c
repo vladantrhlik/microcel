@@ -19,7 +19,7 @@ list *list_init() {
 }
 
 int list_add(list *l, void *data) {
-	if (!l || !data) return -1;
+	if (!l) return -1;
 
 	/* check if there's space */
 	if (l->count+1 > l->size) {
