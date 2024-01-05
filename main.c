@@ -2,6 +2,7 @@
 #include <string.h>
 #include "tokenizer.h"
 #include "eval.h"
+#include "analyzer.h"
 
 void printtokens(list *tokens) {
 	/* print all tokens */
@@ -48,16 +49,19 @@ int main(int argc, char *argv[]) {
 	buffer[bufpos] = '\0';
 	
 	printf("Expression: %s\n", buffer);
-
+	
+	/* split expression into list of tokens */
 	list *tokens = parse_expr(buffer);
 	printf("Tokens from infix notation:\n");
 	printtokens(tokens);
+	/* TODO substitute literal by constants or other value */
 	
-	/* just to see postfix, not used */
-	list *p = postfix(tokens);
-	printf("Tokens in postfix notation:\n");
-	printtokens(p);
+	/* analyze expression structure, fix '-' */
+	analyze(tokens);
+	printf("Tokens after analysis:\n");
+	printtokens(tokens);
 
+	/* evaluate expression */
 	float result;
 	eval(tokens, &result);
 

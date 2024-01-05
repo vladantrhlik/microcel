@@ -71,8 +71,9 @@ list *parse_expr(char *expr) {
 
 	while (*expr) {
 		token_type newtype = ttfromc(&curtype, *expr);
-
-		if (newtype != curtype || (newtype == curtype && issinglechar(newtype)) ) {
+			
+	
+		if ( newtype != curtype || (newtype == curtype && issinglechar(newtype)) ) {
 			/* generate new token */	
 			buffer[bufpos] = '\0';
 			token *t = token_init(curtype);
@@ -105,8 +106,13 @@ list *parse_expr(char *expr) {
 			bufpos = 0;
 			memset(buffer, '\0', 32); /* clear buffer */
 			curtype = newtype;
-		} 		
-		
+		} else if (curtype == TT_BOP && *expr == '-') {
+			printf("fixing '-'\n");
+			/* fix '-' after other BOP */
+			newtype = TT_INT;
+			curtype = TT_INT;
+		}
+	
 		/* add new character to buffer */
 		if (newtype == curtype || curtype == TT_EMPTY) {/* add char to buffer */
 			buffer[bufpos] = *expr;
