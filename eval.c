@@ -1,12 +1,15 @@
 #include "adt/list.h"
 #include "adt/stack.h"
 #include "tokenizer.h"
+#include <math.h>
 #include <stdio.h>
 
 int opprec(token *t) {
 	if (t->type != TT_BOP) return 0;
 
 	switch (t->ch) {
+		case '^':
+			return 4;
 		case '+':
 		case '-':
 			return 2;
@@ -123,6 +126,8 @@ int evalpostfix(list *tokens, float *res) {
 					case '/':
 						result = val1 / val2;
 						break;
+					case '^':
+						result = (float) pow((double) val1, (double) val2);
 				}
 				
 				/* push result to stack */
