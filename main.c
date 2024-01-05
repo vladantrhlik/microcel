@@ -3,6 +3,7 @@
 #include "tokenizer.h"
 #include "eval.h"
 #include "analyzer.h"
+#include "substitute.h"
 
 void printtokens(list *tokens) {
 	/* print all tokens */
@@ -58,7 +59,10 @@ int main(int argc, char *argv[]) {
 	printf("Tokens from infix notation:\n");
 	printtokens(tokens);
 
-	/* TODO substitute literals by constants or other value */
+	/* substitute literals by constants */
+	substitute(tokens);
+
+	/* TODO: cell dependency checking */
 	
 	/* analyze expression structure, fix '-' */
 	analyze(tokens);
