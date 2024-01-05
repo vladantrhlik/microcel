@@ -3,7 +3,13 @@
 #ifndef TOKENIZER
 #define TOKENIZER
 
-#define SUPPORTED_FUNCS {"sin", "cos", "tan"}
+/**
+ * All supported function
+ */
+#define FUNC_NAMES {"sin", "cos", "sqrt", "ceil", "floor"}
+#define FUNC_FUNCTIONS {sin, cos, sqrt, ceil, floor}
+#define FUNC_COUNT 5
+
 
 typedef enum {
 	TT_EMPTY,	/* white space / no value */

@@ -60,10 +60,9 @@ int issinglechar(token_type t) {
 }
 
 int isfunc(char *lit) {
-	char *funcs[] = SUPPORTED_FUNCS;
+	char *funcs[] = FUNC_NAMES;
 
-	int len = sizeof(funcs)/sizeof(char*);
-	for (int i = 0; i<len; i++) {
+	for (int i = 0; i<FUNC_COUNT; i++) {
 		if (!strcmp(lit, funcs[i])) return 1;
 	}
 	return 0;

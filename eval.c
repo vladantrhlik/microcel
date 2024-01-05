@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdio.h>
 
+/**
+ * Returns precedence of given operator
+ */
 int opprec(token *t) {
 	if (t->type != TT_BOP) return 0;
 
@@ -23,6 +26,9 @@ int opprec(token *t) {
 	}
 }
 
+/**
+ * Creates postfix notation from infix using shunting yard algorithm
+ */
 list *postfix(list *tokens) {
 	if (!tokens) return NULL;
 
@@ -78,12 +84,18 @@ list *postfix(list *tokens) {
 	return out;
 }
 
+/**
+ * Evaluates postfix expression
+ */
 int evalpostfix(list *tokens, float *res) {
 	if (!tokens) return -1;
 
 	token *op1, *op2, *new;
 	float result;
 	
+	char *func_names[] = FUNC_NAMES;
+	double (*func_funcs[])(double a) = FUNC_FUNCTIONS;
+
 	stack *s = stack_init();
 	if (!s) return -1;
 
@@ -111,21 +123,21 @@ int evalpostfix(list *tokens, float *res) {
 				op1 = (token*) stack_pop(s);
 				
 				if (!op1) return -1;
+				int found = 0;				
+				for (int j = 0; j<FUNC_COUNT; j++) {
+					if (!strcmp(t->lit, func_names[j])) {
+						result = (float) func_funcs[j](op1->fnum);
+						/* push result to stack */
+						new = token_init(TT_FLOAT);
+						new->fnum = result;
+						stack_push(s, new);
+						found = 1;
+						break;
 
-				if (!strcmp(t->lit, "sin")) {
-					result = sin((double) op1->fnum);
-				} else if (!strcmp(t->lit, "cos")) {
-					result = cos((double) op1->fnum);
-				} else {
-					printf("Function %s not implemented.\n", t->lit);
-					return -1;
+					}
 				}
-
-				/* push result to stack */
-				new = token_init(TT_FLOAT);
-				new->fnum = result;
-				stack_push(s, new);
-				break;
+				if (!found) printf("Function %s not implemented\n", t->lit);
+				break;	
 			case TT_BOP:
 				/* get operands and convert them to float */
 				op2 = (token*) stack_pop(s);
@@ -174,6 +186,9 @@ int evalpostfix(list *tokens, float *res) {
 	return 0;
 }
 
+/**
+ * Evaluates infix notation and saves result to res
+ */
 int eval(list *tokens, float *res) {
 	if (!tokens) return -1;
 	
