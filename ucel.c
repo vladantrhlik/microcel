@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "ucel.h"
 #include "adt/list.h"
 
@@ -76,7 +77,6 @@ cell *table_get_cell(table *t, int x, int y) {
 }
 
 int main(int argc, char *argv[]) {
-	/*
 	char *file_name = "test_data.ucel";
 
 	FILE *input = fopen(file_name, "r");
@@ -84,18 +84,29 @@ int main(int argc, char *argv[]) {
 		printf("Failed to open %s\n", file_name);
 		return -1;
 	}
+	
+	char cell_buffer[128];
+	char cur, *buf; /* current char in file and in cell buffer */
+	int x = 0, y = 0;
 
-	fclose(input);
-	*/
-	table *t = table_init();
-	int x, y;
-	while (1) {
-		printf("x,y: ");
-		scanf("%d,%d", &x, &y);
+	buf = cell_buffer;
 
-		table_add_cell(t, x, y);
+	while ( (cur = fgetc(input)) != EOF ) {
+		if (cur == DELIM || cur == '\n') {
+			/* end of the current cell */
+			*buf = '\0';
+			printf("[%d,%d]: %s\n", x, y, cell_buffer);
+			buf = cell_buffer;
+
+			if (cur == DELIM) x++;
+			else y++;
+		} else if (buf > cell_buffer || !isspace(cur)) {
+			*buf = cur;
+			buf++;
+		}
 	}
 
+	fclose(input);
 	
 	return 0;
 }
