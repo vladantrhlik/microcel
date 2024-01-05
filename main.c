@@ -52,10 +52,17 @@ int main(int argc, char *argv[]) {
 	list *tokens = parse_expr(buffer);
 	printf("Tokens from infix notation:\n");
 	printtokens(tokens);
-
+	
+	/* just to see postfix, not used */
 	list *p = postfix(tokens);
 	printf("Tokens in postfix notation:\n");
 	printtokens(p);
+
+	float result;
+	eval(tokens, &result);
+
+	printf("Result: %f\n", result);
+
 	
 	return 0;
 }

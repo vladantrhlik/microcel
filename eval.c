@@ -70,3 +70,95 @@ list *postfix(list *tokens) {
 
 	return out;
 }
+
+int evalpostfix(list *tokens, float *res) {
+	if (!tokens) return -1;
+
+	token *op1, *op2;
+	
+	stack *s = stack_init();
+	if (!s) return -1;
+
+	for (int i = 0; i<tokens->count; i++) {
+		token *t = (token*) list_get(tokens, i);
+		switch (t->type) {
+			case TT_INT:
+				/* convert to float token */
+				t->type = TT_FLOAT;
+				t->fnum = (float) t->inum;
+				stack_push(s, t);
+				break;
+			case TT_FLOAT:
+				stack_push(s, t);
+				break;
+			case TT_LIT:
+				printf("Found literal while evaluating\n");
+				return -1;
+			case TT_CPAR:
+			case TT_OPAR:
+				printf("Found parenthese while evaluating\n");
+				return -1;
+			case TT_BOP:
+				/* get operands and convert them to float */
+				op2 = (token*) stack_pop(s);
+				op1 = (token*) stack_pop(s);
+
+				if (!op2 || !op1) return -1;
+			
+				float val1 = op1->fnum;
+				float val2 = op2->fnum;
+
+				float result = 0;
+
+				switch (t->ch) {
+					case '+':
+						result = val1 + val2;
+						break;
+					case '-':
+						result = val1 - val2;
+						break;
+					case '*':
+						result = val1 * val2;
+						break;
+					case '/':
+						result = val1 / val2;
+						break;
+				}
+				
+				/* push result to stack */
+				token *new = token_init(TT_FLOAT);
+				new->fnum = result;
+
+				stack_push(s, new);
+				break;
+		}
+	}
+	
+	token *out = stack_pop(s);
+	if (out && out->type == TT_FLOAT) {
+		*res = out->fnum;
+	} else {
+		return -1;
+	}
+
+	return 0;
+}
+
+int eval(list *tokens, float *res) {
+	if (!tokens) return -1;
+	
+	/* convert to postfix notation */
+	list *p = postfix(tokens);
+	if (!p) {
+		printf("Error while converting infix to postfix\n");
+		return -1;
+	}
+	
+	/* evaluate postfix */
+	if (evalpostfix(p, res) == -1) {
+		printf("Error while evaluating postfix notation\n");	
+		return -1;
+	}
+
+	return 0;
+}
