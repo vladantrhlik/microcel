@@ -93,13 +93,14 @@ int main(int argc, char *argv[]) {
 
 	while ( (cur = fgetc(input)) != EOF ) {
 		if (cur == DELIM || cur == '\n') {
-			/* end of the current cell */
-			*buf = '\0';
-			printf("[%d,%d]: %s\n", x, y, cell_buffer);
-			buf = cell_buffer;
-
+			if (buf > cell_buffer) {
+				/* end of the current cell */
+				*buf = '\0';
+				printf("[%d,%d]: %s\n", x, y, cell_buffer);
+				buf = cell_buffer;
+			}
 			if (cur == DELIM) x++;
-			else y++;
+			else (x = 0, y++);
 		} else if (buf > cell_buffer || !isspace(cur)) {
 			*buf = cur;
 			buf++;
