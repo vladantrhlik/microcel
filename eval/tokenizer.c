@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tokenizer.h"
-#include "adt/list.h"
+#include "../adt/list.h"
 
 token *token_init(token_type type) {
 	if (!type) return NULL;

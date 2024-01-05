@@ -1,6 +1,6 @@
 #include "analyzer.h"
 #include "tokenizer.h"
-#include "adt/list.h"
+#include "../adt/list.h"
 #include <stdio.h>
 
 /**

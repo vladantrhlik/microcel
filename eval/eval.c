@@ -1,5 +1,5 @@
-#include "adt/list.h"
-#include "adt/stack.h"
+#include "../adt/list.h"
+#include "../adt/stack.h"
 #include "tokenizer.h"
 #include <math.h>
 #include <string.h>
@@ -102,6 +102,7 @@ int evalpostfix(list *tokens, float *res) {
 	for (int i = 0; i<tokens->count; i++) {
 		token *t = (token*) list_get(tokens, i);
 		switch (t->type) {
+			case TT_EMPTY: break;
 			case TT_INT:
 				/* convert to float token */
 				t->type = TT_FLOAT;

@@ -1,5 +1,5 @@
 #include "substitute.h"
-#include "adt/list.h"
+#include "../adt/list.h"
 #include "tokenizer.h"
 #include <string.h>
 

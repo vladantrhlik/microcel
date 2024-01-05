@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-#include "tokenizer.h"
-#include "eval.h"
-#include "analyzer.h"
-#include "substitute.h"
+#include "eval/tokenizer.h"
+#include "eval/eval.h"
+#include "eval/analyzer.h"
+#include "eval/substitute.h"
 
 void printtokens(list *tokens) {
 	/* print all tokens */
