@@ -28,6 +28,9 @@ void printtokens(list *tokens) {
 			case TT_CPAR:
 				printf("+ close parenthese\n");
 				break;
+			case TT_FUNC:
+				printf("+ function: %s\n", t->lit);
+				break;	
 			default:
 				break;
 		}

@@ -92,6 +92,10 @@ list *parse_expr(char *expr) {
 					t->lit = malloc(sizeof(char) * strlen(buffer));
 					if (!t->lit) return NULL;
 					strcpy(t->lit, buffer);
+					/* check if its function */
+					if (!strcmp(t->lit, "sin") || !strcmp(t->lit, "cos")) {
+						t->type = TT_FUNC;	
+				 	}
 					break;
 				case TT_OPAR:
 					break;

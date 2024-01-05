@@ -2,6 +2,7 @@
 #include "adt/stack.h"
 #include "tokenizer.h"
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
 
 int opprec(token *t) {
@@ -48,6 +49,9 @@ list *postfix(list *tokens) {
 				}
 				stack_push(opstack, t);
 				break;
+			case TT_FUNC:
+				stack_push(opstack, t);
+				break;
 			case TT_OPAR:
 				stack_push(opstack, t);
 				break;
@@ -77,7 +81,8 @@ list *postfix(list *tokens) {
 int evalpostfix(list *tokens, float *res) {
 	if (!tokens) return -1;
 
-	token *op1, *op2;
+	token *op1, *op2, *new;
+	float result;
 	
 	stack *s = stack_init();
 	if (!s) return -1;
@@ -101,6 +106,26 @@ int evalpostfix(list *tokens, float *res) {
 			case TT_OPAR:
 				printf("Found parenthese while evaluating\n");
 				return -1;
+			case TT_FUNC:
+				result = 0;
+				op1 = (token*) stack_pop(s);
+				
+				if (!op1) return -1;
+
+				if (!strcmp(t->lit, "sin")) {
+					result = sin((double) op1->fnum);
+				} else if (!strcmp(t->lit, "cos")) {
+					result = cos((double) op1->fnum);
+				} else {
+					printf("Undefined function: %s\n", t->lit);
+					return -1;
+				}
+
+				/* push result to stack */
+				new = token_init(TT_FLOAT);
+				new->fnum = result;
+				stack_push(s, new);
+				break;
 			case TT_BOP:
 				/* get operands and convert them to float */
 				op2 = (token*) stack_pop(s);
@@ -111,7 +136,7 @@ int evalpostfix(list *tokens, float *res) {
 				float val1 = op1->fnum;
 				float val2 = op2->fnum;
 
-				float result = 0;
+				result = 0;
 
 				switch (t->ch) {
 					case '+':
@@ -131,7 +156,7 @@ int evalpostfix(list *tokens, float *res) {
 				}
 				
 				/* push result to stack */
-				token *new = token_init(TT_FLOAT);
+				new = token_init(TT_FLOAT);
 				new->fnum = result;
 
 				stack_push(s, new);

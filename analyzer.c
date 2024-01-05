@@ -47,8 +47,8 @@ int analyze(list *tokens) {
 				/* remove operation token */
 				list_remove(tokens, i);
 			}
-			/* '<bop>+/-(...' */
-			if (prev && prev->type == TT_BOP && next->type == TT_OPAR) {
+			/* '<bop>+/-<(/func>...' */
+			if (prev && prev->type == TT_BOP && (next->type == TT_OPAR || next->type == TT_FUNC)) {
 				/* change +/- to 1 */
 				cur->type = TT_INT;
 				cur->inum = cur->ch == '-' ? -1 : 1;

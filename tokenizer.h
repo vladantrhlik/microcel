@@ -11,6 +11,7 @@ typedef enum {
 	TT_BOP, 	/* binary operation */
 	TT_OPAR,	/* ( */
 	TT_CPAR,	/* ) */
+	TT_FUNC,	/* function - sin, cos */
 } token_type; 
 
 typedef struct {
