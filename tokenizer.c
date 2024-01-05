@@ -51,14 +51,23 @@ token_type ttfromc(token_type *cur, char c) {
 	return TT_EMPTY;
 }
 
+/**
+ * @return int 1 if token holds value else 0
+ */
 int isvalue(token_type type) {
 	return type == TT_LIT || type == TT_INT || type == TT_FLOAT;
 }
 
+/**
+ * @return int 1 if token is operator or parenthese
+ */
 int issinglechar(token_type t) {
 	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
 }
 
+/**
+ * @return int 1 if string is name of predefined function else 0
+ */
 int isfunc(char *lit) {
 	char *funcs[] = FUNC_NAMES;
 

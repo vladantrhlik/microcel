@@ -10,7 +10,9 @@
 #define FUNC_FUNCTIONS {sin, cos, sqrt, ceil, floor}
 #define FUNC_COUNT 5
 
-
+/**
+ * All types of tokens 
+ */
 typedef enum {
 	TT_EMPTY,	/* white space / no value */
 	TT_INT,		/* int value */
@@ -22,6 +24,9 @@ typedef enum {
 	TT_FUNC,	/* function - sin, cos */
 } token_type; 
 
+/**
+ * Token structure
+ */
 typedef struct {
 	token_type type;
 	union value {

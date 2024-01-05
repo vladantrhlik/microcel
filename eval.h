@@ -10,7 +10,7 @@
 int eval(list *tokens, float *res);
 
 /* 
- * Rearanges tokens in infix notation to postfix (Polish) notation 
+ * Rearanges tokens in infix notation to postfix (reverse Polish) notation 
 */
 list *postfix(list *tokens);
 
