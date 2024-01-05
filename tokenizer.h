@@ -3,6 +3,8 @@
 #ifndef TOKENIZER
 #define TOKENIZER
 
+#define SUPPORTED_FUNCS {"sin", "cos", "tan"}
+
 typedef enum {
 	TT_EMPTY,	/* white space / no value */
 	TT_INT,		/* int value */

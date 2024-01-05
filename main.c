@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
 	list *tokens = parse_expr(buffer);
 	printf("Tokens from infix notation:\n");
 	printtokens(tokens);
-	/* TODO substitute literal by constants or other value */
+
+	/* TODO substitute literals by constants or other value */
 	
 	/* analyze expression structure, fix '-' */
 	analyze(tokens);

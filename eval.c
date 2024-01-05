@@ -117,7 +117,7 @@ int evalpostfix(list *tokens, float *res) {
 				} else if (!strcmp(t->lit, "cos")) {
 					result = cos((double) op1->fnum);
 				} else {
-					printf("Undefined function: %s\n", t->lit);
+					printf("Function %s not implemented.\n", t->lit);
 					return -1;
 				}
 

@@ -59,6 +59,16 @@ int issinglechar(token_type t) {
 	return t == TT_BOP || t == TT_CPAR || t == TT_OPAR;
 }
 
+int isfunc(char *lit) {
+	char *funcs[] = SUPPORTED_FUNCS;
+
+	int len = sizeof(funcs)/sizeof(char*);
+	for (int i = 0; i<len; i++) {
+		if (!strcmp(lit, funcs[i])) return 1;
+	}
+	return 0;
+}
+
 list *parse_expr(char *expr) {
 	if (!expr) return NULL;
 
@@ -92,10 +102,8 @@ list *parse_expr(char *expr) {
 					t->lit = malloc(sizeof(char) * strlen(buffer));
 					if (!t->lit) return NULL;
 					strcpy(t->lit, buffer);
-					/* check if its function */
-					if (!strcmp(t->lit, "sin") || !strcmp(t->lit, "cos")) {
-						t->type = TT_FUNC;	
-				 	}
+
+					if (isfunc(t->lit)) t->type = TT_FUNC;
 					break;
 				case TT_OPAR:
 					break;
