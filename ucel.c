@@ -4,7 +4,10 @@
 #include <ctype.h>
 #include "ucel.h"
 #include "adt/list.h"
+#include "eval/eval.h"
 #include "eval/tokenizer.h"
+#include "eval/substitute.h"
+#include "eval/analyzer.h"
 
 #define DELIM	'|'
 #define COL_RANGE 26 /* A - Z */
@@ -54,6 +57,7 @@ cell *table_add_cell(table *t, int x, int y) {
 	cell *c = malloc(sizeof(cell));
 	if (!c) return NULL;
 
+	c->dependencies = list_init();
 	c->evaluated = 0;
 	c->value = -1;
 	c->tokens = NULL;
@@ -71,6 +75,24 @@ cell *table_get_cell(table *t, int x, int y) {
 		return list_get(list_get(t->rows, y), x);
 	}
 	return NULL;
+}
+
+int chars_to_pos(char *chars, int *x, int *y) {
+	if (chars[0] >= 'A' && chars[0] <= 'Z') *x = chars[0]-'A';
+	else return 0;
+	
+	chars++;
+	
+	*y = 0;
+	while (*chars) {
+		if (isdigit(*chars)) {
+			if (*y > 0) *y*=10;
+			*y += *chars-'0';
+		} else return 0;
+		chars++;
+	}
+
+	return 1;
 }
 
 table *parse_table(char *file_name) {
@@ -134,4 +156,96 @@ table *parse_table(char *file_name) {
 	fclose(input);
 	
 	return t;
+}
+
+int load_cell_dependencies(table *t) {
+	token *tok;
+	cell *c, *d;
+	int xp, yp;
+
+	for (int y = 0; y < t->height; y++) {
+		for (int x = 0; x < t->width; x++) {
+			c = table_get_cell(t, x, y);
+			if (!c) continue;
+			if (c->type == C_EXPR) {
+				/* substitute constants */
+				substitute(c->tokens);
+				for (int i = 0; i < c->tokens->count; i++) {
+					tok = list_get(c->tokens, i);
+					if (tok->type == TT_LIT) {
+						/* parse cell position */
+						if (chars_to_pos(tok->lit, &xp, &yp)
+							&& xp >= 0 && xp < t->width
+							&& yp >= 0 && yp < t->height) {
+							d = table_get_cell(t, xp, yp);
+							if (d) list_add(c->dependencies, d);
+							printf("[%d, %d] is dependent on [%d, %d]\n", x, y, xp, yp);
+						} else {
+							printf("'%s' is not a valid cell\n", tok->lit);
+							return 0;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return 1;
+}
+
+int eval_cell(table *t, cell *c) {
+	if (!c || c->evaluated) return -1;
+
+	if (c->type == C_EXPR && !c->evaluated) {
+		/* evaluate all dependencies */
+		for (int i = 0; i<c->dependencies->count; i++) {
+			cell *d = list_get(c->dependencies, i);
+			eval_cell(t, d);
+		}
+		/* replace cells with their value */
+		for (int i = 0; i<c->tokens->count; i++) {
+			token *tok = list_get(c->tokens, i);
+			if (tok->type == TT_LIT){
+				int x, y;
+				if (chars_to_pos(tok->lit, &x, &y)) {
+					cell *c = table_get_cell(t, x, y);
+					if (c->type == C_NUM) tok->fnum = c->value;
+					else {
+						printf("Referencing cell '%s' with no value, using 0\n", tok->lit);
+						tok->fnum = 0;
+					}
+					tok->type = TT_FLOAT;
+				}
+			}
+		}
+		printf("Analyzing tokens\n");
+		analyze(c->tokens);
+		float res = 0;
+		eval(c->tokens, &res);
+		printf("Result: %f\n", res);
+		/* change cell to float value */
+		c->type = C_NUM;
+		c->value = res;
+		
+	} 
+	
+	c->evaluated = 1;
+
+	return 0;	
+}
+
+int eval_table(table *t) {
+	/* sanity check */
+	if (!t) return -1;
+	/* load dependencies of all cells */
+	if (!load_cell_dependencies(t)) return -1;
+
+	for (int y = 0; y < t->height; y++) {
+		for (int x = 0; x < t->width; x++) {
+			cell *c = table_get_cell(t, x, y);
+			if (c && !c->evaluated) eval_cell(t, c);
+		}
+	}
+	
+	return 0;
 }

@@ -1,4 +1,4 @@
-#include "adt/list.h"
+#include "list.h"
 
 #ifndef GRAPH
 #define GRAPH
@@ -26,6 +26,9 @@ int graph_add_node(graph *g, void *data);
 */
 int graph_add_edge(graph *g, int from, int to);
 
+/**
+* Get data of node by its index
+*/
 void *graph_get_node(graph *g, int index);
 
 

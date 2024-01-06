@@ -91,29 +91,32 @@ int main(int argc, char *argv[]) {
 	table *t = parse_table(file_name);
 
 	if (!t) printf("Table parsing failed\n");
+
+	eval_table(t);	
+	printf("Eval done.\n");
+
+	/* print table */
 	for (int y = 0; y < t->height; y++) {
 		for (int x = 0; x < t->width; x++) {
 			cell *c = table_get_cell(t, x, y);
 			if (!c) continue;
-			printf("[%d, %d]:\n", x, y);	
 			switch (c->type) {
 				case C_EMPTY:
-					printf("empty cell\n");
 					break;
 				case C_NUM:
-					printf("value: %f\n", c->value);
+					printf("%f", c->value);
 					break;
 				case C_STR:
-					printf("string: %s\n", c->txt);
+					printf("%s", c->txt);
 					break;
 				case C_EXPR:
-					printtokens(c->tokens);
+					printf("expr.");
 					break;
 			}
-	
+			printf("\t|");
 		}
+		printf("\n");
 	}
 
-	
 	return 0;
 }
