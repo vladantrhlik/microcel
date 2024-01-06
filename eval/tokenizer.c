@@ -5,6 +5,8 @@
 #include "tokenizer.h"
 #include "../adt/list.h"
 
+#define LOG 0
+
 token *token_init(token_type type) {
 	if (!type) return NULL;
 
@@ -87,6 +89,8 @@ list *parse_expr(char *expr) {
 
 	list *l = list_init();
 
+	if (LOG) printf("parsing expression %s\n", expr);
+
 	while (*expr) {
 		token_type newtype = ttfromc(&curtype, *expr);
 			
@@ -99,12 +103,15 @@ list *parse_expr(char *expr) {
 			switch (curtype) {
 				case TT_INT:
 					t->inum = atoi(buffer);
+					if (LOG) printf("int value: %d\n", t->inum);
 					break;
 				case TT_FLOAT:
 					t->fnum = atof(buffer);
+					if (LOG) printf("float value: %f\n", t->fnum);
 					break;
 				case TT_BOP:
 					t->ch = *buffer;
+					if (LOG) printf("binary op: %c\n", t->ch);
 					break;
 				case TT_LIT:
 					t->lit = malloc(sizeof(char) * strlen(buffer));
@@ -112,10 +119,13 @@ list *parse_expr(char *expr) {
 					strcpy(t->lit, buffer);
 
 					if (isfunc(t->lit)) t->type = TT_FUNC;
+					if (LOG) printf("literat/func: %s\n", t->lit);
 					break;
 				case TT_OPAR:
+					if (LOG) printf("open parenthese");
 					break;
 				case TT_CPAR:
+					if (LOG) printf("close parenthese");
 					break;
 				default:
 					break;

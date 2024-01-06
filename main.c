@@ -1,14 +1,21 @@
 #include <stdio.h>
 #include <string.h>
+#include "adt/list.h"
 #include "eval/tokenizer.h"
 #include "eval/eval.h"
 #include "eval/analyzer.h"
 #include "eval/substitute.h"
+#include "ucel.h"
 
 void printtokens(list *tokens) {
 	/* print all tokens */
 	for (int i = 0; i<tokens->count; i++) {
-		token *t = (token *) tokens->data[i];
+		token *t = list_get(tokens, i);
+
+		if (!t) {
+			printf("! NULL token\n");
+			continue;
+		}
 		
 		switch (t->type) {
 			case TT_INT:
@@ -39,7 +46,7 @@ void printtokens(list *tokens) {
 
 }
 
-int main(int argc, char *argv[]) {
+void eval_expr_from_args(int argc, char *argv[]) {
 	/* create expression from args */
 	char buffer[512];
 	int bufpos = 0;
@@ -74,6 +81,38 @@ int main(int argc, char *argv[]) {
 	eval(tokens, &result);
 
 	printf("Result: %f\n", result);
+
+
+}
+
+int main(int argc, char *argv[]) {
+
+	char *file_name = "test_data.ucel";
+	table *t = parse_table(file_name);
+
+	if (!t) printf("Table parsing failed\n");
+	for (int y = 0; y < t->height; y++) {
+		for (int x = 0; x < t->width; x++) {
+			cell *c = table_get_cell(t, x, y);
+			if (!c) continue;
+			printf("[%d, %d]:\n", x, y);	
+			switch (c->type) {
+				case C_EMPTY:
+					printf("empty cell\n");
+					break;
+				case C_NUM:
+					printf("value: %f\n", c->value);
+					break;
+				case C_STR:
+					printf("string: %s\n", c->txt);
+					break;
+				case C_EXPR:
+					printtokens(c->tokens);
+					break;
+			}
+	
+		}
+	}
 
 	
 	return 0;

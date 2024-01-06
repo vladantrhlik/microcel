@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "ucel.h"
 #include "adt/list.h"
+#include "eval/tokenizer.h"
 
 #define DELIM	'|'
 #define COL_RANGE 26 /* A - Z */
@@ -26,35 +27,33 @@ cell *table_add_cell(table *t, int x, int y) {
 		printf("Cell [%d, %d] is out of valid range\n", x, y);
 		return NULL;
 	}
+	
+	static cell EMPTY_CELL = {0};
+	EMPTY_CELL.type = C_EMPTY;
 
 	/* check if there's enough rows */
 	if (y >= t->height - 1) {
 		for (int i = 0; i < y - t->height + 1; i++) {
 			/* add empty row */
-			list_add(t->rows, NULL);
+			list_add(t->rows, list_init());
 			t->height++;
 		}
 	}
 
 	list *row = list_get(t->rows, y);
-	/* allocate new row if NULL */
-	if (!row) {
-		list_remove(t->rows, y);
-		row = list_init();
-		if (!row) return NULL;
-		list_insert(t->rows, row, y);
-	}
 
 	/* check if there's enough columns in */
 	if (x >= row->count - 1) {
 		for (int i = 0; i < x - row->count + 1; i++) {
-			list_add(row, NULL);
+			list_add(row, (void*) &EMPTY_CELL);
 		}
 		t->width = x > t->width ? x : t->width;
 	}
 
 	/* add new cell */
 	cell *c = malloc(sizeof(cell));
+	if (!c) return NULL;
+
 	c->evaluated = 0;
 	c->value = -1;
 	c->tokens = NULL;
@@ -63,8 +62,6 @@ cell *table_add_cell(table *t, int x, int y) {
 	/* add cell to row */
 	list_remove(row, x);
 	list_insert(row, c, x);
-
-	printf("Added cell %s\n", c->pos);
 
 	return c;
 }
@@ -76,18 +73,19 @@ cell *table_get_cell(table *t, int x, int y) {
 	return NULL;
 }
 
-int main(int argc, char *argv[]) {
-	char *file_name = "test_data.ucel";
-
+table *parse_table(char *file_name) {
 	FILE *input = fopen(file_name, "r");
 	if (!input) {
 		printf("Failed to open %s\n", file_name);
-		return -1;
+		return NULL;
 	}
 	
 	char cell_buffer[128];
 	char cur, *buf; /* current char in file and in cell buffer */
 	int x = 0, y = 0;
+	table *t = table_init();
+
+	if (!t) return NULL;
 
 	buf = cell_buffer;
 
@@ -95,8 +93,34 @@ int main(int argc, char *argv[]) {
 		if (cur == DELIM || cur == '\n') {
 			if (buf > cell_buffer) {
 				/* end of the current cell */
+				cell *c = table_add_cell(t, x, y);
+				if (!c) return NULL;
+
 				*buf = '\0';
-				printf("[%d,%d]: %s\n", x, y, cell_buffer);
+				if (*cell_buffer == '=') {
+					sprintf(c->pos, "%c%d", 'A'+x, y);
+					c->type = C_EXPR;
+					c->evaluated = 0;
+					c->tokens = parse_expr(cell_buffer+1);
+				} else {
+					/* find out type of value (int/float/char*) */
+					buf = cell_buffer;
+					c->evaluated = 1;
+					int nan = 0;
+					while (*buf) {
+						if ( !(isspace(*buf) || *buf == '.' || isdigit(*buf)) ) nan = 1;
+						buf++;
+					}
+					if (nan) {
+						c->type = C_STR;
+						c->txt = malloc(sizeof(char) + (strlen(cell_buffer + 1)));
+						if (!c->txt) return NULL;
+						strcpy(c->txt, cell_buffer);
+					} else {
+						c->type = C_NUM;
+						c->value = atof(cell_buffer);
+					}
+				}
 				buf = cell_buffer;
 			}
 			if (cur == DELIM) x++;
@@ -109,5 +133,5 @@ int main(int argc, char *argv[]) {
 
 	fclose(input);
 	
-	return 0;
+	return t;
 }

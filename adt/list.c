@@ -19,7 +19,7 @@ list *list_init() {
 }
 
 int list_add(list *l, void *data) {
-	if (!l) return -1;
+	if (!l || !data) return -1;
 
 	/* check if there's space */
 	if (l->count+1 > l->size) {
@@ -56,14 +56,13 @@ int list_remove(list *l, int index) {
 		l->count--;
 		return 0;
 	}
-
 	return -1;
 }
 
 int list_insert(list *l, void *data, int index) {
 	if (!l || !data) return -1;
 	
-	if (index >= 0 && index < l->count) {
+	if (index >= 0 && index <= l->count) {
 		/* add new data to potentially realloc */
 		list_add(l, data);
 		for (int i = l->count-2; i>=index; i--) {
@@ -72,7 +71,6 @@ int list_insert(list *l, void *data, int index) {
 		l->data[index] = data;
 		return 0;
 	}
-
 	return -1;
 }
 
