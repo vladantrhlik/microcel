@@ -50,7 +50,7 @@ cell *table_add_cell(table *t, int x, int y) {
 		for (int i = 0; i < x - row->count + 1; i++) {
 			list_add(row, (void*) &EMPTY_CELL);
 		}
-		t->width = x > t->width ? x : t->width;
+		t->width = x+1 > t->width ? x+1 : t->width;
 	}
 
 	/* add new cell */
