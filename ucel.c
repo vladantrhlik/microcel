@@ -8,6 +8,7 @@
 #include "eval/tokenizer.h"
 #include "eval/substitute.h"
 #include "eval/analyzer.h"
+#include "utils.h"
 
 #define DELIM	'|'
 #define COL_RANGE 26 /* A - Z */
@@ -179,7 +180,6 @@ int load_cell_dependencies(table *t) {
 							&& yp >= 0 && yp < t->height) {
 							d = table_get_cell(t, xp, yp);
 							if (d) list_add(c->dependencies, d);
-							printf("[%d, %d] is dependent on [%d, %d]\n", x, y, xp, yp);
 						} else {
 							printf("'%s' is not a valid cell\n", tok->lit);
 							return 0;
@@ -218,11 +218,9 @@ int eval_cell(table *t, cell *c) {
 				}
 			}
 		}
-		printf("Analyzing tokens\n");
 		analyze(c->tokens);
 		float res = 0;
 		eval(c->tokens, &res);
-		printf("Result: %f\n", res);
 		/* change cell to float value */
 		c->type = C_NUM;
 		c->value = res;
@@ -248,4 +246,30 @@ int eval_table(table *t) {
 	}
 	
 	return 0;
+}
+
+void print_table(table *t) {
+	if (!t) return;
+
+	for (int y = 0; y < t->height; y++) {
+		for (int x = 0; x < t->width; x++) {
+			cell *c = table_get_cell(t, x, y);
+			if (!c) continue;
+			switch (c->type) {
+				case C_EMPTY:
+					break;
+				case C_NUM:
+					printf("%f", c->value);
+					break;
+				case C_STR:
+					printf("%s", c->txt);
+					break;
+				case C_EXPR:
+					printf("expr.");
+					break;
+			}
+			printf("\t|");
+		}
+		printf("\n");
+	}
 }

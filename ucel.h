@@ -35,6 +35,8 @@ cell *table_get_cell(table *t, int x, int y);
 
 table *parse_table(char *file_name);
 
+void print_table(table *t);
+
 int load_cell_dependencies(table *t);
 
 int eval_table(table *t);

@@ -41,7 +41,7 @@ token_type ttfromc(token_type *cur, char c) {
 			return TT_EMPTY;
 		}
 		return TT_FLOAT;
-	} else if (isspace(c)) {
+	} else if (isspace(c) || !c) {
 		return TT_EMPTY;
 	} else if (isalpha(c)) {
 		return TT_LIT;
@@ -91,11 +91,11 @@ list *parse_expr(char *expr) {
 
 	if (LOG) printf("parsing expression %s\n", expr);
 
-	while (*expr) {
+	while (*expr || bufpos > 0) {
 		token_type newtype = ttfromc(&curtype, *expr);
 			
 	
-		if ( newtype != curtype || (newtype == curtype && issinglechar(newtype)) ) {
+		if ( newtype != curtype || (newtype == curtype && issinglechar(newtype)) || !*expr ) {
 			/* generate new token */	
 			buffer[bufpos] = '\0';
 			token *t = token_init(curtype);
@@ -142,6 +142,8 @@ list *parse_expr(char *expr) {
 			newtype = TT_INT;
 			curtype = TT_INT;
 		}
+
+		if (!*expr) break;
 	
 		/* add new character to buffer */
 		if (newtype == curtype || curtype == TT_EMPTY) {/* add char to buffer */
