@@ -17,6 +17,12 @@ token *token_init(token_type type) {
 	return t;
 }
 
+void token_free(void **tp) {
+	if (!tp || !*tp) return;
+	//free(*tp);
+	*tp = NULL;
+}
+
 /**
  * token_type from char -- Figures out type of currently read token
  *

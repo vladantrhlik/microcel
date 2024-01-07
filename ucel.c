@@ -209,7 +209,10 @@ int eval_cell(table *t, cell *c) {
 				int x, y;
 				if (chars_to_pos(tok->lit, &x, &y)) {
 					cell *c = table_get_cell(t, x, y);
-					if (c->type == C_NUM) tok->fnum = c->value;
+					if (c->type == C_NUM) {
+						free(tok->lit);
+						tok->fnum = c->value;
+					}
 					else {
 						printf("Referencing cell '%s' with no value, using 0\n", tok->lit);
 						tok->fnum = 0;
@@ -221,10 +224,12 @@ int eval_cell(table *t, cell *c) {
 		analyze(c->tokens);
 		float res = 0;
 		eval(c->tokens, &res);
+		/* replace token cell with value cell */
+		/* free list of tokens */
+		list_free(&c->tokens, &token_free);
 		/* change cell to float value */
 		c->type = C_NUM;
 		c->value = res;
-		
 	} 
 	
 	c->evaluated = 1;

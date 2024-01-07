@@ -74,3 +74,18 @@ int list_insert(list *l, void *data, int index) {
 	return -1;
 }
 
+void list_free(list **lp, void (*free_f)(void **data)) {
+	if (!lp || !*lp) return;
+	
+	list *l = *lp;
+	printf("Freeing list of %d items\n", l->count);
+	/* free all list items */
+	for (int i = 0; i < l->count; i++) {
+		void *data = list_get(l, i);
+		if (data && free_f) free_f(data);
+	}
+
+	free(l->data);
+	free(l);
+	*lp = NULL;
+}

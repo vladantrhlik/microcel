@@ -6,9 +6,9 @@
 /**
  * All supported function
  */
-#define FUNC_NAMES {"sin", "cos", "sqrt", "ceil", "floor"}
-#define FUNC_FUNCTIONS {sin, cos, sqrt, ceil, floor}
-#define FUNC_COUNT 5
+#define FUNC_NAMES {"sin", "cos", "sqrt", "ceil", "floor", "log"}
+#define FUNC_FUNCTIONS {sin, cos, sqrt, ceil, floor, log}
+#define FUNC_COUNT 6
 
 /**
  * All types of tokens 
@@ -42,6 +42,8 @@ typedef struct {
 * @param token_type type type of new token
 */
 token *token_init(token_type type);
+
+void token_free(void **t);
 
 /**
  * Checks if token type is literal, int or float

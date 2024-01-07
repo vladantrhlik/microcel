@@ -19,4 +19,6 @@ int list_remove(list *l, int index);
 
 int list_insert(list *l, void *data, int index);
 
+void list_free(list **l, void (*free_f)(void **data));
+
 #endif

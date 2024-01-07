@@ -2,6 +2,7 @@
 #include "../adt/list.h"
 #include "tokenizer.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define PI 3.141592653589793
 #define E 2.718281828459045
@@ -14,9 +15,11 @@ int substitute(list *tokens) {
 		if (t->type == TT_LIT) {
 			if (!strcmp(t->lit, "pi")) {
 				t->type = TT_FLOAT;
+				free(t->lit);
 				t->fnum = PI; 
 			} else if (!strcmp(t->lit, "e")) {
 				t->type = TT_FLOAT;
+				free(t->lit);
 				t->fnum = E;
 			}
 		}
