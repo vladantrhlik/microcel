@@ -130,9 +130,9 @@ int evalpostfix(list *tokens, float *res) {
 					if (!strcmp(t->lit, func_names[j])) {
 						result = (float) func_funcs[j](op1->fnum);
 						/* push result to stack */
-						new = token_init(TT_FLOAT);
-						new->fnum = result;
-						stack_push(s, new);
+						op1->type = TT_FLOAT;
+						op1->fnum = result;
+						stack_push(s, op1);
 						found = 1;
 						break;
 
