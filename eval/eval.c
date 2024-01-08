@@ -208,7 +208,6 @@ int eval(list *tokens, float *res) {
 		return -1;
 	}
 	
-	printf("Freeing list of postfix tokens\n");
 	list_free(&p, NULL);
 
 	return 0;

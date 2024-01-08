@@ -213,7 +213,7 @@ int eval_cell(table *t, cell *c) {
 						tok->fnum = c->value;
 					}
 					else {
-						printf("Referencing cell '%s' with no value, using 0\n", tok->lit);
+						printf("Referencing cell '%s' with no value, using 0\n", c->txt);
 						tok->fnum = 0;
 					}
 					tok->type = TT_FLOAT;
