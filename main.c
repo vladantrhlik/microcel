@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 	print_table(t);
 
 	table_free(&t);
-	printf("Table freed\n");
+	printf("\nTable freed.\n");
 
 	return 0;
 }

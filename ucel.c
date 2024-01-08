@@ -281,7 +281,6 @@ void cell_free(void **cellp) {
 	if (!cellp || !*cellp || ((cell*) *cellp) == &EMPTY_CELL) return;
 
 	cell *cell = *cellp;
-	printf("Freeing cell\n");
 
 	/* free dependencies */
 	list_free(&cell->dependencies, NULL);
@@ -303,10 +302,8 @@ void table_free(table **tp) {
 
 	/* free all rows */
 	for (int y = 0; y < t->height; y++) {
-		printf("Freeing row %d\n", y);
 		list *row = list_get(t->rows, y);
 		list_free(&row, cell_free);
-		printf("Row %d freed\n", y);
 	}
 	/* free list of rows */
 	list_free(&t->rows, NULL);
