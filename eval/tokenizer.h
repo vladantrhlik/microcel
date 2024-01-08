@@ -29,7 +29,7 @@ typedef enum {
  */
 typedef struct {
 	token_type type;
-	union value {
+	union {
 		int inum;
 		float fnum;
 		char *lit;	
