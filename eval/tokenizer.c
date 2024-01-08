@@ -19,6 +19,11 @@ token *token_init(token_type type) {
 
 void token_free(void **tp) {
 	if (!tp || !*tp) return;
+	token *t = *tp;
+
+	if ( (t->type == TT_LIT || t->type == TT_FUNC) && t->lit) {
+		free(t->lit);
+	}
 	free(*tp);
 	*tp = NULL;
 }
