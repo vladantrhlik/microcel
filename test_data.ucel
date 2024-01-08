@@ -1,3 +1,5 @@
 15.6 |	=A0/5     |	=log(10)         | =A0^sin(A0)
-=B1  | =sin(pi/2) | =A1       | =C1
-=B2  | 	          | =sqrt(25) | cau bobe
+=B1  | =sin(pi/2) | =A1              | =C1
+=B2  | 	          | =sqrt(25)        | cau bobe
+=A0*3| =sin(2*e)  | =A3 * A0         | =A2
+

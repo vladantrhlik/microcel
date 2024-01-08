@@ -58,7 +58,7 @@ cell *table_add_cell(table *t, int x, int y) {
 	if (!c) return NULL;
 
 	c->dependencies = list_init();
-	c->evaluated = 0;
+	c->state = NEVALUATED;
 	c->value = -1;
 	c->tokens = NULL;
 	sprintf(c->pos, "%c%d", 'A'+x, y);
@@ -122,12 +122,12 @@ table *parse_table(char *file_name) {
 				if (*cell_buffer == '=') {
 					sprintf(c->pos, "%c%d", 'A'+x, y);
 					c->type = C_EXPR;
-					c->evaluated = 0;
+					c->state = NEVALUATED;
 					c->tokens = parse_expr(cell_buffer+1);
 				} else {
 					/* find out type of value (int/float/char*) */
 					buf = cell_buffer;
-					c->evaluated = 1;
+					c->state = EVALUATED;
 					int nan = 0;
 					while (*buf) {
 						if ( !(isspace(*buf) || *buf == '.' || isdigit(*buf)) ) nan = 1;
@@ -193,10 +193,11 @@ int load_cell_dependencies(table *t) {
 }
 
 int eval_cell(table *t, cell *c) {
-	if (!c || c->evaluated) return -1;
+	if (!c || c->state == EVALUATED) return -1;
 
-	if (c->type == C_EXPR && !c->evaluated) {
+	if (c->type == C_EXPR && c->state == NEVALUATED) {
 		/* evaluate all dependencies */
+		c->state = EVALUATING;
 		for (int i = 0; i<c->dependencies->count; i++) {
 			cell *d = list_get(c->dependencies, i);
 			eval_cell(t, d);
@@ -213,7 +214,7 @@ int eval_cell(table *t, cell *c) {
 						tok->fnum = c->value;
 					}
 					else {
-						printf("Referencing cell '%s' with no value, using 0\n", c->txt);
+						printf("Referencing cell '%s' with no value, using 0\n", c->pos);
 						tok->fnum = 0;
 					}
 					tok->type = TT_FLOAT;
@@ -229,10 +230,12 @@ int eval_cell(table *t, cell *c) {
 		/* change cell to float value */
 		c->type = C_NUM;
 		c->value = res;
-	} 
+	} else if (c->state == EVALUATING) {
+		printf("Cyclic dependency in cell %s\n", c->pos);
+		return -1;
+	}
 	
-	c->evaluated = 1;
-
+	c->state = NEVALUATED;
 	return 0;	
 }
 
@@ -245,7 +248,7 @@ int eval_table(table *t) {
 	for (int y = 0; y < t->height; y++) {
 		for (int x = 0; x < t->width; x++) {
 			cell *c = table_get_cell(t, x, y);
-			if (c && !c->evaluated) eval_cell(t, c);
+			if (c && c->state == NEVALUATED) eval_cell(t, c);
 		}
 	}
 	

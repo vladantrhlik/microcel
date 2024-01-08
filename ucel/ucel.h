@@ -3,6 +3,9 @@
 #ifndef UCEL
 #define UCEL
 
+/**
+ * Type of cell
+ */
 typedef enum {
 	C_EXPR,
 	C_NUM,
@@ -10,6 +13,18 @@ typedef enum {
 	C_EMPTY,
 } cell_type;
 
+/**
+ * Current state of cell
+ */
+typedef enum {
+	EVALUATED,
+	NEVALUATED,
+	EVALUATING, /* for detecting cyclic dependencies */
+} eval_state;
+
+/**
+ * Table structure
+ */
 typedef struct {
 	int width, height;
 	list *rows;
@@ -17,7 +32,7 @@ typedef struct {
 
 typedef struct {
 	char pos[4]; /* A00 - Z99 */
-	int evaluated;
+	eval_state state;
 	cell_type type;
 	list *dependencies; /* pointers to all cell which need to be evaluated */
 	union {
