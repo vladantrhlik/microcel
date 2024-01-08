@@ -91,7 +91,7 @@ list *postfix(list *tokens) {
 int evalpostfix(list *tokens, float *res) {
 	if (!tokens) return -1;
 
-	token *op1, *op2, *new;
+	token *op1, *op2;
 	float result;
 	
 	char *func_names[] = FUNC_NAMES;
@@ -170,10 +170,10 @@ int evalpostfix(list *tokens, float *res) {
 				}
 				
 				/* push result to stack */
-				new = token_init(TT_FLOAT);
-				new->fnum = result;
+				op1->type = TT_FLOAT;
+				op1->fnum = result;
 
-				stack_push(s, new);
+				stack_push(s, op1);
 				break;
 		}
 	}
