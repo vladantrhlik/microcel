@@ -67,6 +67,7 @@ void stack_revert(stack *s) {
 
 void stack_free(stack **s) {
 	if (!s || !*s) return;
+	free((*s)->data);
 	free(*s);
 	*s = NULL;
 }
