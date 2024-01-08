@@ -5,6 +5,7 @@
 #include "../eval/eval.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 void printtokens(list *tokens) {
 	/* print all tokens */
@@ -83,3 +84,27 @@ void eval_expr_from_args(int argc, char *argv[]) {
 
 
 }
+
+/**
+ * Centeres text to given width
+ */
+char *ctext(char *txt, int width) {
+	/* calculate offset */
+	int off = (width - strlen(txt))/2;
+	off = off < 0 ? 0 : off;
+	
+	char *new = malloc(sizeof(char) * (width+1));
+	if (!new) return NULL;
+
+	memset(new, ' ', width+1);
+	new[width] = '\0';
+
+	/* push text to center */
+	for (int i = 0; i < strlen(txt); i++) {
+		new[off+i] = txt[i];
+		if (i == width-1) break;
+	}
+
+	return new;
+}
+

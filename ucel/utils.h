@@ -7,4 +7,6 @@ void printtokens(list *tokens);
 
 void eval_expr_from_args(int argc, char *argv[]);
 
+char *ctext(char *txt, int width);
+
 #endif

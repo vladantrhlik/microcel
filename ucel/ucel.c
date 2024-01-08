@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -254,28 +255,64 @@ int eval_table(table *t) {
 	
 	return 0;
 }
-
 void print_table(table *t) {
 	if (!t) return;
+	int cellw = 15;
+	int leftw = 3; 
+	
+	printf("Table:\n");
+	/* print top row */
+	for (int x = 0; x<leftw; x++) {
+		printf(" ");
+	}
+	printf("|");
+	for (int x = 0; x < t->width; x++) {
+		char symbol[2] = {'A'+x, '\0'};
+		char *st = ctext(symbol, cellw);
+		printf("%s|", st);
+		free(st);
+	}
+	printf("\n");
+	for (int x = 0; x < t->width*(cellw+1) + 1 + leftw; x++) {
+		printf("-");
+	}
+	printf("\n");
 
 	for (int y = 0; y < t->height; y++) {
+		/* row number */
+		char *buffer = malloc(sizeof(char) * (leftw + 1));
+		sprintf(buffer, "%d", y);
+		char *st = ctext(buffer, leftw);
+		printf("%s|", st);
+		free(buffer);
+		free(st);
+
 		for (int x = 0; x < t->width; x++) {
 			cell *c = table_get_cell(t, x, y);
 			if (!c) continue;
+
+			char *buffer = malloc(sizeof(char) * (cellw+1));
+
 			switch (c->type) {
 				case C_EMPTY:
+					sprintf(buffer, "-");
 					break;
 				case C_NUM:
-					printf("%f", c->value);
+					sprintf(buffer, "%f", c->value);
 					break;
 				case C_STR:
-					printf("%s", c->txt);
+					sprintf(buffer, "%s", c->txt);
 					break;
 				case C_EXPR:
-					printf("expr.");
+					sprintf(buffer, "expr.");
 					break;
 			}
-			printf("\t|");
+
+			char *st = ctext(buffer, cellw);
+			printf("%s|", st);
+
+			free(st);
+			free(buffer);
 		}
 		printf("\n");
 	}
