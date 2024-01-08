@@ -125,7 +125,7 @@ list *parse_expr(char *expr) {
 					if (LOG) printf("binary op: %c\n", t->ch);
 					break;
 				case TT_LIT:
-					t->lit = malloc(sizeof(char) * strlen(buffer));
+					t->lit = malloc(sizeof(char) * (strlen(buffer)+1));
 					if (!t->lit) return NULL;
 					strcpy(t->lit, buffer);
 
