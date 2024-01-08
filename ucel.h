@@ -29,6 +29,8 @@ typedef struct {
 
 table *table_init();
 
+void table_free(table **t);
+
 cell *table_add_cell(table *t, int x, int y);
 
 cell *table_get_cell(table *t, int x, int y);

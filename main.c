@@ -22,5 +22,8 @@ int main(int argc, char *argv[]) {
 	eval_table(t);	
 	print_table(t);
 
+	table_free(&t);
+	printf("Table freed\n");
+
 	return 0;
 }

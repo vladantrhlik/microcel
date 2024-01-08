@@ -82,7 +82,7 @@ void list_free(list **lp, void (*free_f)(void **data)) {
 	/* free all list items */
 	for (int i = 0; i < l->count; i++) {
 		void *data = list_get(l, i);
-		if (data && free_f) free_f(data);
+		if (data && free_f) free_f(&data);
 	}
 
 	free(l->data);

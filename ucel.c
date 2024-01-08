@@ -13,6 +13,8 @@
 #define DELIM	'|'
 #define COL_RANGE 26 /* A - Z */
 #define ROW_RANGE 99 /* 0 - 99 */
+	
+cell EMPTY_CELL = {"", 1, C_EMPTY};
 
 table *table_init() {
 	table *t = malloc(sizeof(table));
@@ -31,10 +33,6 @@ cell *table_add_cell(table *t, int x, int y) {
 		printf("Cell [%d, %d] is out of valid range\n", x, y);
 		return NULL;
 	}
-	
-	static cell EMPTY_CELL = {0};
-	EMPTY_CELL.type = C_EMPTY;
-
 	/* check if there's enough rows */
 	if (y >= t->height - 1) {
 		for (int i = 0; i < y - t->height + 1; i++) {
@@ -277,4 +275,42 @@ void print_table(table *t) {
 		}
 		printf("\n");
 	}
+}
+
+void cell_free(void **cellp) {
+	if (!cellp || !*cellp || ((cell*) *cellp) == &EMPTY_CELL) return;
+
+	cell *cell = *cellp;
+	printf("Freeing cell\n");
+
+	/* free dependencies */
+	list_free(&cell->dependencies, NULL);
+
+	/* free text if any exists */
+	if (cell->type == C_STR && cell->txt) {
+		free(cell->txt);
+	}
+
+	free(cell);
+	*cellp = NULL;
+}
+
+void table_free(table **tp) {
+	/* sanity check */
+	if (!tp || !*tp) return;
+
+	table *t = *tp;
+
+	/* free all rows */
+	for (int y = 0; y < t->height; y++) {
+		printf("Freeing row %d\n", y);
+		list *row = list_get(t->rows, y);
+		list_free(&row, cell_free);
+		printf("Row %d freed\n", y);
+	}
+	/* free list of rows */
+	list_free(&t->rows, NULL);
+	
+	free(t);
+	*tp = NULL;
 }

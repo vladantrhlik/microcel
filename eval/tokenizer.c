@@ -19,7 +19,7 @@ token *token_init(token_type type) {
 
 void token_free(void **tp) {
 	if (!tp || !*tp) return;
-	//free(*tp);
+	free(*tp);
 	*tp = NULL;
 }
 
