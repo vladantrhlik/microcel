@@ -207,8 +207,8 @@ int eval_cell(table *t, cell *c) {
 				int x, y;
 				if (chars_to_pos(tok->lit, &x, &y)) {
 					cell *c = table_get_cell(t, x, y);
+					free(tok->lit);
 					if (c->type == C_NUM) {
-						free(tok->lit);
 						tok->fnum = c->value;
 					}
 					else {
