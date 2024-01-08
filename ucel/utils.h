@@ -1,4 +1,4 @@
-#include "adt/list.h"
+#include "../adt/list.h"
 
 #ifndef UTILS
 #define UTILS

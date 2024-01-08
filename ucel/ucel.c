@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "ucel.h"
-#include "adt/list.h"
-#include "eval/eval.h"
-#include "eval/tokenizer.h"
-#include "eval/substitute.h"
-#include "eval/analyzer.h"
+#include "../adt/list.h"
+#include "../eval/eval.h"
+#include "../eval/tokenizer.h"
+#include "../eval/substitute.h"
+#include "../eval/analyzer.h"
 #include "utils.h"
+#include "../adt/list.h"
+#include "../ucel/ucel.h"
 
 #define DELIM	'|'
 #define COL_RANGE 26 /* A - Z */

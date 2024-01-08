@@ -1,8 +1,8 @@
 #include "utils.h"
-#include "eval/tokenizer.h"
-#include "eval/substitute.h"
-#include "eval/analyzer.h"
-#include "eval/eval.h"
+#include "../eval/tokenizer.h"
+#include "../eval/substitute.h"
+#include "../eval/analyzer.h"
+#include "../eval/eval.h"
 #include <stdio.h>
 #include <string.h>
 

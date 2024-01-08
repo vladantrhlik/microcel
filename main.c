@@ -3,8 +3,8 @@
 #include "eval/eval.h"
 #include "eval/analyzer.h"
 #include "eval/substitute.h"
-#include "ucel.h"
-#include "utils.h"
+#include "ucel/ucel.h"
+#include "ucel/utils.h"
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
