@@ -80,6 +80,7 @@ list *postfix(list *tokens) {
 	while (stack_peak(opstack)) {
 		list_add(out, stack_pop(opstack));
 	}
+	stack_free(&opstack);
 
 	return out;
 }
@@ -183,6 +184,7 @@ int evalpostfix(list *tokens, float *res) {
 	} else {
 		return -1;
 	}
+	stack_free(&s);
 
 	return 0;
 }

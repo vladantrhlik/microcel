@@ -1,4 +1,5 @@
 #include "../adt/list.h"
+#include <math.h>
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -7,7 +8,7 @@
  * All supported function
  */
 #define FUNC_NAMES {"sin", "cos", "sqrt", "ceil", "floor", "log"}
-#define FUNC_FUNCTIONS {sin, cos, sqrt, ceil, floor, log}
+#define FUNC_FUNCTIONS {&sin, cos, sqrt, ceil, floor, log}
 #define FUNC_COUNT 6
 
 /**
