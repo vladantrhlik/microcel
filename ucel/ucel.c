@@ -1,4 +1,3 @@
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -298,7 +297,7 @@ void print_table(table *t) {
 					sprintf(buffer, "-");
 					break;
 				case C_NUM:
-					sprintf(buffer, "%f", c->value);
+					sprintf(buffer, "%.3f", c->value);
 					break;
 				case C_STR:
 					sprintf(buffer, "%s", c->txt);
