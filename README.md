@@ -9,7 +9,7 @@ $\micro\text{cell}$ procesess input file in this format:
 ```
 Columns are A-Z and rows 0-99. Pipe (`|`) symbol is used to separate cells and white spaces are ignored. To create expression you use `=` followed by mathematical expression which can use basic math operations (`+`, `-`, `*`, `/`, `^`), values of other cells, functions (`sin`, `cos`, `sqrt`, `ceil`, `floor`, `log`) or contants (`pi`, `e`).
 
-Use `make` to build the program and `./main <input-file>` to evaluate given file.
+Use `make` to build the program and `./ucel <input-file>` to evaluate given file.
 Result of example above:
 ```
    |       A       |       B       |       C       |
